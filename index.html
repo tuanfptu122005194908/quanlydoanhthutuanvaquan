@@ -1443,6 +1443,81 @@
     </style>
   </head>
   <body>
+    <div
+      id="loginModal"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 2000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(10px);
+        transition: opacity 0.3s ease;
+      "
+    >
+      <div
+        class="form-card"
+        style="
+          max-width: 400px;
+          width: 90%;
+          padding: 2.5rem;
+          text-align: center;
+          transform: scale(1.05); /* Hiệu ứng nổi bật */
+          border: 2px solid var(--primary-color);
+          animation: fadeInUp 0.5s ease;
+        "
+      >
+        <h3
+          class="text-gradient-primary"
+          style="font-size: 2rem; margin-bottom: 2rem"
+        >
+          🔐 Đăng Nhập Hệ Thống
+        </h3>
+        <form id="loginForm">
+          <div class="form-group" style="margin-bottom: 1.5rem">
+            <label for="username">Tài khoản (Email)</label>
+            <input
+              type="email"
+              id="username"
+              required
+              placeholder="admin0112@gmail.com"
+            />
+          </div>
+          <div class="form-group" style="margin-bottom: 2rem">
+            <label for="password">Mật khẩu</label>
+            <input
+              type="password"
+              id="password"
+              required
+              placeholder="tuan0112"
+            />
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="loginButton"
+            style="width: 100%; padding: 1rem"
+          >
+            ➡️ Đăng Nhập
+          </button>
+          <p
+            id="loginError"
+            style="
+              color: var(--danger-color);
+              margin-top: 1rem;
+              font-weight: 600;
+            "
+          ></p>
+        </form>
+      </div>
+    </div>
+
+    <div id="appContent" style="visibility: hidden"></div>
     <header class="header">
       <div class="header-content">
         <h1>💰 Quản lý Doanh Thu</h1>
@@ -1629,6 +1704,7 @@
       const todayRevenueEl = document.getElementById("todayRevenue");
       const totalOrdersEl = document.getElementById("totalOrders");
       const todayOrdersEl = document.getElementById("todayOrders");
+
       const printInvoiceContent = document.querySelector(
         ".print-invoice-content"
       );
@@ -1636,6 +1712,17 @@
       // NEW: Bulk Paste Elements
       const bulkDataInput = document.getElementById("bulkDataInput");
       const importBulkBtn = document.getElementById("importBulkBtn");
+      const loginModal = document.getElementById("loginModal");
+      const loginForm = document.getElementById("loginForm");
+      const usernameInput = document.getElementById("username");
+      const passwordInput = document.getElementById("password");
+      const loginErrorEl = document.getElementById("loginError");
+      const appContent = document.getElementById("appContent");
+
+      // Thông tin đăng nhập cố định
+      const ADMIN_USER = "admin0112@gmail.com";
+      const ADMIN_PASS = "tuan0112";
+      const IS_LOGGED_IN_KEY = "isLoggedIn"; // Local Storage Key
 
       let orders = [];
       let currentPage = 1;
@@ -2522,45 +2609,82 @@
         }
       });
 
-      // ================= INITIALIZATION =================
+      // ================= AUTHENTICATION LOGIC =================
 
-      // Dữ liệu mẫu (Giữ lại để khởi tạo nếu không có Local Storage)
-      const initialOrders = [
-        {
-          id: "DH001",
-          customer: "Nguyễn Văn A",
-          email: "a@mail.com",
-          product: "Dịch vụ web",
-          quantity: 1,
-          price: 5000000,
-          date: new Date(2025, 9, 25), // Tháng 10
-        },
-        {
-          id: "DH002",
-          customer: "Trần Thị B",
-          email: "b@mail.com",
-          product: "Khóa học",
-          quantity: 2,
-          price: 1500000,
-          date: new Date(2025, 10, 10), // Tháng 11
-        },
-        {
-          id: "DH003",
-          customer: "Lê Văn C",
-          email: "c@mail.com",
-          product: "Phần mềm",
-          quantity: 1,
-          price: 8000000,
-          date: new Date(), // Hôm nay
-        },
-      ];
+      /**
+       * Xử lý sự kiện đăng nhập
+       * @param {Event} e
+       */
+      function handleLogin(e) {
+        e.preventDefault();
+        const user = usernameInput.value.trim();
+        const pass = passwordInput.value.trim();
 
-      document.addEventListener("DOMContentLoaded", () => {
+        // Hiển thị loading/vô hiệu hóa nút
+        const loginButton = document.getElementById("loginButton");
+        const originalText = loginButton.textContent;
+        loginButton.disabled = true;
+        loginButton.innerHTML = `<span class="loading-spinner"></span> Đang xử lý...`;
+
+        // Giả lập độ trễ mạng
+        setTimeout(() => {
+          if (user === ADMIN_USER && pass === ADMIN_PASS) {
+            // Đăng nhập thành công
+            localStorage.setItem(IS_LOGGED_IN_KEY, "true");
+            loginModal.style.opacity = "0";
+            setTimeout(() => {
+              loginModal.style.display = "none";
+              appContent.style.visibility = "visible"; // Hiện nội dung ứng dụng
+              showNotification(
+                "Đăng nhập thành công! Chào mừng trở lại.",
+                "success"
+              );
+
+              // Khởi tạo ứng dụng sau khi đăng nhập
+              initApp();
+            }, 300);
+          } else {
+            // Đăng nhập thất bại
+            loginErrorEl.textContent = "Tài khoản hoặc Mật khẩu không đúng.";
+            showNotification("Đăng nhập thất bại. Vui lòng thử lại.", "error");
+
+            // Khôi phục nút
+            loginButton.disabled = false;
+            loginButton.innerHTML = originalText;
+          }
+        }, 1000); // Độ trễ 1 giây để mô phỏng mạng
+      }
+
+      /**
+       * Kiểm tra trạng thái đăng nhập khi tải trang
+       */
+      function checkLoginStatus() {
+        const isLoggedIn = localStorage.getItem(IS_LOGGED_IN_KEY) === "true";
+        if (isLoggedIn) {
+          loginModal.style.display = "none";
+          appContent.style.visibility = "visible";
+          initApp(); // Khởi tạo ứng dụng ngay lập tức
+        } else {
+          loginModal.style.display = "flex";
+          appContent.style.visibility = "hidden";
+          loginForm.addEventListener("submit", handleLogin);
+        }
+      }
+
+      // ================= INITIALIZATION (Điều chỉnh) =================
+
+      // Di chuyển toàn bộ logic khởi tạo vào hàm initApp()
+      function initApp() {
         loadOrders(); // Tải dữ liệu từ Local Storage hoặc tạo mẫu
         initializeChart(); // Khởi tạo biểu đồ
         updateDashboard(); // Cập nhật Dashboard
         updateChart(); // Cập nhật dữ liệu lần đầu cho Chart
         renderTable(); // Hiển thị bảng lần đầu
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Thay thế logic DOMContentLoaded cũ bằng checkLoginStatus
+        checkLoginStatus();
       });
     </script>
   </body>
