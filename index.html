@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý Doanh Thu</title>
+    <style>
+      /* ============ VARIABLES ============ */
+      :root {
+        /* Gradients - Modern & Vibrant */
+        --primary-gradient: linear-gradient(
+          135deg,
+          #6366f1 0%,
+          #8b5cf6 50%,
+          #d946ef 100%
+        );
+        --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+        --success-gradient: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        --dark-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        --accent-gradient: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+
+        /* Solid Colors */
+        --primary-color: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #818cf8;
+        --success-color: #10b981;
+        --danger-color: #ef4444;
+        --warning-color: #f59e0b;
+        --info-color: #06b6d4;
+
+        /* Backgrounds */
+        --bg-light: #f8fafc;
+        --bg-white: #ffffff;
+        --bg-card: #ffffff;
+        --text-dark: #0f172a;
+        --text-gray: #64748b;
+        --text-light: #94a3b8;
+        --border-color: #e2e8f0;
+
+        /* Shadows with color */
+        --shadow-primary: 0 4px 20px rgba(99, 102, 241, 0.15);
+        --shadow-success: 0 4px 20px rgba(16, 185, 129, 0.15);
+        --shadow-warning: 0 4px 20px rgba(245, 158, 11, 0.15);
+        --shadow-danger: 0 4px 20px rgba(239, 68, 68, 0.15);
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+
+        /* Border Radius */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --radius-2xl: 24px;
+
+        /* Transitions */
+        --transition-fast: 0.15s ease;
+        --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      [data-theme="dark"] {
+        --bg-light: #0f172a;
+        --bg-white: #1e293b;
+        --bg-card: #1e293b;
+        --text-dark: #f1f5f9;
+        --text-gray: #94a3b8;
+        --text-light: #cbd5e1;
+        --border-color: #334155;
+        --shadow-primary: 0 4px 20px rgba(99, 102, 241, 0.25);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+        --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.6);
+      }
+
+      /* ============ RESET & BASE ============ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        line-height: 1.6;
+        transition: background-color var(--transition-base),
+          color var(--transition-base);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* ============ HEADER ============ */
+      .header {
+        background: var(--bg-white);
+        box-shadow: var(--shadow-md);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid var(--border-color);
+        animation: slideDown 0.5s ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .header-content {
+        /* TĂNG MAX WIDTH CHO MÀN HÌNH LỚN */
+        max-width: 1800px;
+        margin: 0 auto;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .header h1 {
+        font-size: 1.75rem;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        animation: fadeInLeft 0.6s ease;
+      }
+
+      @keyframes fadeInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        animation: fadeInRight 0.6s ease;
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* ============ NAVIGATION ============ */
+      .nav {
+        display: flex;
+        gap: 0.5rem;
+        background: var(--bg-light);
+        padding: 0.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .nav-btn {
+        padding: 0.65rem 1.25rem;
+        border: none;
+        background: transparent;
+        color: var(--text-gray);
+        cursor: pointer;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-btn::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        transform: translate(-50%, -50%);
+        transition: width var(--transition-slow), height var(--transition-slow);
+        z-index: -1;
+      }
+
+      .nav-btn:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-primary);
+      }
+
+      .nav-btn:hover::before {
+        width: 200%;
+        height: 200%;
+        border-radius: var(--radius-md);
+      }
+
+      .nav-btn.active {
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: var(--shadow-primary);
+        transform: translateY(-2px);
+      }
+
+      .nav-btn:active {
+        transform: translateY(0) scale(0.98);
+      }
+
+      /* ============ DARK MODE TOGGLE ============ */
+      .theme-toggle {
+        background: var(--primary-gradient);
+        border: none;
+        padding: 0.65rem;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        transition: all var(--transition-base);
+        box-shadow: var(--shadow-primary);
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .theme-toggle::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s;
+      }
+
+      .theme-toggle:hover {
+        transform: rotate(180deg) scale(1.05);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .theme-toggle:hover::before {
+        transform: translateX(100%);
+      }
+
+      .theme-toggle:active {
+        transform: rotate(180deg) scale(0.95);
+      }
+
+      /* ============ CONTAINER ============ */
+      .container {
+        /* TĂNG MAX WIDTH CHO MÀN HÌNH LỚN */
+        max-width: 1800px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+
+      .section {
+        display: none;
+        animation: fadeInUp 0.5s ease;
+      }
+
+      .section.active {
+        display: block;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ============ DASHBOARD STATS ============ */
+      .stats-grid {
+        display: grid;
+        /* Giữ 4 cột cho màn hình desktop thông thường */
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: var(--bg-card);
+        padding: 2rem;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
+        transition: height var(--transition-base);
+      }
+
+      .stat-card::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(99, 102, 241, 0.05) 0%,
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity var(--transition-base);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: var(--shadow-xl);
+        border-color: transparent;
+      }
+
+      .stat-card:hover::before {
+        height: 100%;
+        opacity: 0.05;
+      }
+
+      .stat-card:hover::after {
+        opacity: 1;
+      }
+
+      .stat-card:nth-child(1)::before {
+        background: var(--primary-gradient);
+      }
+
+      .stat-card:nth-child(2)::before {
+        background: var(--success-gradient);
+      }
+
+      .stat-card:nth-child(3)::before {
+        background: var(--warning-gradient);
+      }
+
+      .stat-card:nth-child(4)::before {
+        background: var(--accent-gradient);
+      }
+
+      .stat-label {
+        color: var(--text-gray);
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+        animation: countUp 0.8s ease;
+      }
+
+      @keyframes countUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .stat-card:nth-child(2) .stat-value {
+        background: var(--success-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .stat-card:nth-child(3) .stat-value {
+        background: var(--warning-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .stat-card:nth-child(4) .stat-value {
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .stat-change {
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        color: var(--success-color);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ============ CHART ============ */
+      .chart-container {
+        background: var(--bg-card);
+        padding: 2rem;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        transition: all var(--transition-base);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Thêm Animation Glow và Vùng màu nền lấp lánh */
+      .chart-container {
+        /* Mặc định cho hiệu ứng glow */
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+        animation: neon-glow 3s ease-in-out infinite alternate; /* Áp dụng hiệu ứng glow */
+      }
+
+      @keyframes neon-glow {
+        0% {
+          box-shadow: 0 0 10px rgba(99, 102, 241, 0.4),
+            0 0 20px rgba(99, 102, 241, 0.1);
+        }
+        100% {
+          box-shadow: 0 0 25px rgba(99, 102, 241, 0.8),
+            0 0 40px rgba(139, 92, 246, 0.4);
+        }
+      }
+
+      .chart-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--primary-gradient);
+        /* Thay đổi: Biểu đồ đẹp hơn sẽ không có vạch ngang đơn giản, mà có hiệu ứng lấp lánh */
+        background: var(--accent-gradient); /* Dùng màu accent để nổi bật hơn */
+        box-shadow: 0 0 10px var(--primary-color);
+        height: 5px; /* Dày hơn một chút */
+        transition: all var(--transition-base);
+      }
+
+      .chart-container:hover {
+        box-shadow: var(--shadow-xl); /* Shadow lớn hơn khi hover */
+        transform: translateY(-4px);
+        border-color: var(--primary-color); /* Nổi bật border khi hover */
+      }
+
+      .chart-container:hover::before {
+        height: 10px;
+        opacity: 0.8;
+      }
+
+      /* FIX: Định nghĩa chiều cao cho canvas để tránh bị kéo dài */
+      .chart-container canvas {
+        max-height: 400px;
+        height: 400px !important;
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      @keyframes flow {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 100% 50%;
+        }
+      }
+
+      #chartPeriod {
+        padding: 0.65rem 1.25rem;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 0.95rem;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        cursor: pointer;
+        font-weight: 600;
+        transition: all var(--transition-base);
+      }
+
+      /* Dark Mode Enhancements for Chart */
+      [data-theme="dark"] .chart-container {
+        background: linear-gradient(
+          135deg,
+          #101524 0%,
+          #1a2233 100%
+        ); /* Nền tối hơn */
+        border-color: #334155;
+      }
+      [data-theme="dark"] .chart-header h3 {
+        background: linear-gradient(90deg, #a78bfa, #c4b5fd, #f97316);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ============ FORM ============ */
+      .form-card {
+        background: var(--bg-card);
+        padding: 2rem;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-base);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .form-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--primary-gradient);
+      }
+
+      .form-card:hover {
+        box-shadow: var(--shadow-lg);
+      }
+
+      .form-card h3 {
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 0.875rem;
+        letter-spacing: 0.3px;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        padding: 0.85rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        transition: all var(--transition-base);
+        font-family: inherit;
+        resize: vertical;
+      }
+
+      .form-group input:hover,
+      .form-group textarea:hover {
+        border-color: var(--primary-light);
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        transform: translateY(-2px);
+        background: var(--bg-white);
+      }
+
+      /* New: Bulk Paste Styles */
+      .bulk-paste-card {
+        background: var(--bg-card);
+        padding: 2rem;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-base);
+      }
+
+      .bulk-paste-card h3 {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.5rem;
+      }
+
+      .bulk-paste-card textarea {
+        min-height: 150px;
+        margin-bottom: 1rem;
+      }
+
+      /* ============ BUTTONS ============ */
+      .btn {
+        padding: 0.85rem 1.75rem;
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        position: relative;
+        overflow: hidden;
+        font-family: inherit;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+      }
+
+      .btn:active {
+        transform: scale(0.95);
+      }
+
+      .btn:hover::before {
+        width: 400px;
+        height: 400px;
+      }
+
+      .btn-primary {
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: var(--shadow-primary);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+      }
+
+      .btn-success {
+        background: var(--success-gradient);
+        color: white;
+        box-shadow: var(--shadow-success);
+      }
+
+      .btn-success:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-danger {
+        background: var(--danger-gradient);
+        color: white;
+        box-shadow: var(--shadow-danger);
+      }
+
+      .btn-danger:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+      }
+
+      .btn-warning {
+        background: var(--warning-gradient);
+        color: white;
+        box-shadow: var(--shadow-warning);
+      }
+
+      .btn-warning:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-xs {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.75rem;
+        border-radius: var(--radius-sm);
+        white-space: nowrap;
+      }
+
+      /* ============ SEARCH ============ */
+      .search-container {
+        background: var(--bg-card);
+        padding: 1.25rem 1.75rem;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-base);
+      }
+
+      .search-container:hover {
+        box-shadow: var(--shadow-lg);
+      }
+
+      .search-input {
+        flex: 1;
+        min-width: 220px;
+        padding: 0.85rem 1.25rem;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        transition: all var(--transition-base);
+        font-family: inherit;
+      }
+
+      .search-input:hover {
+        border-color: var(--primary-light);
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        background: var(--bg-white);
+      }
+
+      /* ============ TABLE ============ */
+      .table-container {
+        background: var(--bg-card);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        transition: all var(--transition-base);
+      }
+
+      .table-container:hover {
+        box-shadow: var(--shadow-lg);
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background: var(--primary-gradient);
+        position: relative;
+      }
+
+      thead::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.5),
+          transparent
+        );
+      }
+
+      th {
+        padding: 1.25rem;
+        text-align: left;
+        font-weight: 700;
+        color: white;
+        border-bottom: none;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+      }
+
+      td {
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-dark);
+        font-weight: 500;
+      }
+
+      tbody tr {
+        transition: all var(--transition-fast);
+        position: relative;
+      }
+
+      tbody tr::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--primary-gradient);
+        transform: scaleY(0);
+        transition: transform var(--transition-base);
+      }
+
+      tbody tr:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(99, 102, 241, 0.05) 0%,
+          transparent 100%
+        );
+        transform: scale(1.01);
+      }
+
+      tbody tr:hover::before {
+        transform: scaleY(1);
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      /* ============ PAGINATION ============ */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .pagination button {
+        padding: 0.65rem 1.25rem;
+        border: 2px solid var(--border-color);
+        background: var(--bg-white);
+        color: var(--text-dark);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        font-weight: 600;
+        font-family: inherit;
+        min-width: 45px;
+      }
+
+      .pagination button:hover:not(:disabled) {
+        background: var(--primary-gradient);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: var(--shadow-primary);
+      }
+
+      .pagination button:active:not(:disabled) {
+        transform: translateY(0) scale(0.98);
+      }
+
+      .pagination button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .pagination button.active {
+        background: var(--primary-gradient);
+        color: white;
+        border-color: transparent;
+        box-shadow: var(--shadow-primary);
+      }
+
+      /* ============ NOTIFICATIONS ============ */
+      .notification {
+        position: fixed;
+        top: 5rem;
+        right: 1.5rem;
+        padding: 1.25rem 1.75rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
+        z-index: 1000;
+        animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        max-width: 420px;
+        backdrop-filter: blur(20px);
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(400px) scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0) scale(1);
+          opacity: 1;
+        }
+      }
+
+      .notification.success {
+        background: var(--success-gradient);
+        color: white;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+      }
+
+      .notification.error {
+        background: var(--danger-gradient);
+        color: white;
+        box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4);
+      }
+
+      /* ============ EDIT MODE ============ */
+      .edit-input {
+        padding: 0.5rem;
+        border: 2px solid var(--primary-color);
+        border-radius: var(--radius-sm);
+        width: 100%;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        font-weight: 500;
+        font-family: inherit;
+        transition: all var(--transition-base);
+      }
+
+      .edit-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+      }
+
+      /* ============ PRINT INVOICE STYLE ============ */
+      @media print {
+        body > *:not(.print-invoice-content) {
+          display: none !important;
+        }
+        .print-invoice-content {
+          display: block !important;
+          width: 100%;
+          font-family: "Times New Roman", Times, serif;
+          font-size: 11pt;
+          margin: 0;
+          padding: 30px;
+          color: black;
+          background-color: white;
+          border: none;
+        }
+        .invoice-header {
+          border-bottom: 3px solid #6366f1;
+          padding-bottom: 10px;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+        }
+        .invoice-header h2 {
+          color: #6366f1;
+          font-size: 20pt;
+          margin: 0;
+        }
+        .company-info {
+          text-align: right;
+          font-size: 10pt;
+        }
+        .invoice-details {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 20px;
+          border: 1px solid #ddd;
+          padding: 15px;
+          border-radius: 5px;
+        }
+        .customer-info,
+        .order-info {
+          width: 48%;
+        }
+        .invoice-details strong {
+          display: inline-block;
+          width: 120px;
+          color: #2d3748;
+        }
+        .invoice-items h3 {
+          font-size: 14pt;
+          border-bottom: 2px solid #e2e8f0;
+          padding-bottom: 5px;
+          margin-bottom: 10px;
+        }
+        .invoice-items table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .invoice-items th,
+        .invoice-items td {
+          border: 1px solid #ddd;
+          padding: 12px;
+          text-align: left;
+        }
+        .invoice-items th {
+          background-color: #6366f1;
+          color: white;
+          font-weight: bold;
+          font-size: 10pt;
+        }
+        .invoice-total {
+          text-align: right;
+          font-size: 14pt;
+          font-weight: bold;
+          margin-top: 20px;
+          padding: 15px;
+          background-color: #f8fafc;
+          border-radius: 5px;
+          border: 1px solid #e2e8f0;
+        }
+        .invoice-footer {
+          text-align: center;
+          margin-top: 50px;
+          font-style: italic;
+          color: #666;
+          font-size: 10pt;
+        }
+        .invoice-signatures {
+          display: flex;
+          justify-content: space-around;
+          margin-top: 60px;
+          text-align: center;
+        }
+        .invoice-signatures div {
+          width: 45%;
+        }
+        .invoice-signatures p {
+          font-weight: bold;
+          margin-bottom: 5px;
+          border-bottom: 1px dashed #aaa;
+          display: inline-block;
+          padding-bottom: 2px;
+        }
+      }
+
+      /* ============ LOADING SPINNER ============ */
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      /* ============ PULSE ANIMATION ============ */
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      /* ============ GLOW EFFECT ============ */
+      @keyframes glow {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(99, 102, 241, 0.6);
+        }
+      }
+
+      .glow {
+        animation: glow 2s ease-in-out infinite;
+      }
+
+      /* ============ SCROLL BEHAVIOR ============ */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg-light);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--primary-gradient);
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-dark);
+      }
+
+      /* ============ SELECTION ============ */
+      ::selection {
+        background: rgba(99, 102, 241, 0.2);
+        color: var(--text-dark);
+      }
+
+      ::-moz-selection {
+        background: rgba(99, 102, 241, 0.2);
+        color: var(--text-dark);
+      }
+
+      /* ============ FOCUS VISIBLE ============ */
+      *:focus-visible {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+      }
+
+      /* ============ RESPONSIVE ============ */
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 1.4rem;
+        }
+        .header-content {
+          padding: 1rem;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        .stat-card {
+          padding: 1.5rem;
+        }
+        .stat-value {
+          font-size: 2rem;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-card,
+        .chart-container,
+        .table-container {
+          padding: 1.5rem;
+        }
+        table {
+          font-size: 0.875rem;
+        }
+        th,
+        td {
+          padding: 0.75rem 0.5rem;
+        }
+        .actions {
+          flex-direction: row;
+        }
+        .btn-xs {
+          padding: 0.3rem 0.5rem;
+          font-size: 0.7rem;
+        }
+        .notification {
+          right: 1rem;
+          left: 1rem;
+          max-width: calc(100% - 2rem);
+        }
+        .chart-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .container {
+          padding: 1.5rem 1rem;
+        }
+        .nav {
+          flex-wrap: wrap;
+          width: 100%;
+        }
+        .nav-btn {
+          flex: 1;
+          min-width: 100px;
+          font-size: 0.85rem;
+          padding: 0.5rem 0.75rem;
+        }
+        .pagination {
+          gap: 0.5rem;
+        }
+        .pagination button {
+          padding: 0.5rem 0.85rem;
+          min-width: 40px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 1.2rem;
+        }
+        .stat-value {
+          font-size: 1.75rem;
+        }
+        .chart-header h3,
+        .form-card h3 {
+          font-size: 1.25rem;
+        }
+        .btn {
+          padding: 0.75rem 1.25rem;
+          font-size: 0.9rem;
+        }
+        .btn-sm {
+          padding: 0.4rem 0.75rem;
+          font-size: 0.8rem;
+        }
+      }
+
+      /* ================================================= */
+      /* ========== MEDIA QUERY CHO MÀN HÌNH LỚN >= 1200px (27 inch tối ưu) ========== */
+      /* ================================================= */
+
+      /* 1. Tăng Max-Width cho toàn bộ nội dung */
+      .header-content,
+      .container {
+        /* Tăng từ 1400px lên 1800px để lấp đầy khoảng trống trên màn 27 inch */
+        max-width: 1800px;
+      }
+
+      @media (min-width: 1200px) {
+        /* 2. Tinh chỉnh Grid cho màn hình LỚN (trên 1200px) */
+        .stats-grid {
+          /* Cho phép hiển thị 5 cột, tận dụng không gian */
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .form-grid {
+          /* Cho phép 3 cột thay vì 2, làm form gọn gàng hơn */
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .stat-card {
+          padding: 2rem 2.5rem; /* Padding lớn hơn */
+        }
+      }
+
+      @media (min-width: 1600px) {
+        /* 3. Tinh chỉnh cho màn hình RẤT LỚN (trên 1600px) */
+        .stats-grid {
+          /* Tăng minmax để thẻ thống kê không quá rộng */
+          grid-template-columns: repeat(4, minmax(350px, 1fr));
+          gap: 2rem;
+        }
+
+        .chart-container {
+          padding: 3rem; /* Tăng padding để biểu đồ nổi bật hơn */
+        }
+
+        .form-card {
+          padding: 3rem;
+        }
+
+        .nav {
+          gap: 1rem;
+        }
+
+        .nav-btn {
+          padding: 0.8rem 1.75rem;
+          font-size: 1rem;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        /* Điều chỉnh form thêm đơn hàng cho màn hình siêu rộng */
+        #orderForm .form-group:nth-child(5) {
+          /* Đảm bảo Giá và Tổng tiền không bị tách khỏi nhau */
+          grid-column: span 1;
+        }
+        #orderForm .form-group:nth-child(6) {
+          grid-column: span 1;
+        }
+      }
+
+      /* Tinh chỉnh cho giao diện Quản lý Đơn hàng */
+      #orders .form-card,
+      #orders .bulk-paste-card,
+      #orders .search-container,
+      #orders .table-container {
+        /* Tăng khoảng cách margin-bottom để các phần tử có không gian thở */
+        margin-bottom: 2.5rem;
+      }
+
+      /* ============ DARK MODE ENHANCEMENTS ============ */
+      [data-theme="dark"] .stat-card,
+      [data-theme="dark"] .form-card,
+      [data-theme="dark"] .chart-container,
+      [data-theme="dark"] .table-container,
+      [data-theme="dark"] .search-container,
+      [data-theme="dark"] .bulk-paste-card {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        border-color: rgba(255, 255, 255, 0.05);
+      }
+
+      [data-theme="dark"] .stat-card:hover,
+      [data-theme="dark"] .form-card:hover,
+      [data-theme="dark"] .chart-container:hover,
+      [data-theme="dark"] .table-container:hover,
+      [data-theme="dark"] .bulk-paste-card:hover {
+        background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      }
+
+      [data-theme="dark"] tbody tr:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(99, 102, 241, 0.1) 0%,
+          transparent 100%
+        );
+      }
+
+      /* ============ UTILITY CLASSES ============ */
+      .text-gradient-primary {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .text-gradient-success {
+        background: var(--success-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .text-gradient-warning {
+        background: var(--warning-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .shadow-glow-primary {
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+      }
+
+      .shadow-glow-success {
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+      }
+
+      .shadow-glow-warning {
+        box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <h1>💰 Quản lý Doanh Thu</h1>
+        <div class="header-actions">
+          <nav class="nav">
+            <button class="nav-btn active" data-section="dashboard">
+              Dashboard
+            </button>
+            <button class="nav-btn" data-section="orders">
+              Quản lý Đơn hàng
+            </button>
+          </nav>
+          <button class="theme-toggle" id="themeToggle">
+            <span id="themeIcon">🌙</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="dashboard" class="section active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Tổng doanh thu</div>
+            <div class="stat-value" id="totalRevenue">0 đ</div>
+            <div class="stat-change">📈 Tất cả thời gian</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Doanh thu hôm nay</div>
+            <div class="stat-value" id="todayRevenue">0 đ</div>
+            <div class="stat-change">📅 Hôm nay</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Tổng đơn hàng</div>
+            <div class="stat-value" id="totalOrders">0</div>
+            <div class="stat-change">📦 Tất cả</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Đơn hàng hôm nay</div>
+            <div class="stat-value" id="todayOrders">0</div>
+            <div class="stat-change">🕒 Hôm nay</div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-header">
+            <h3>Biểu đồ doanh thu</h3>
+            <select id="chartPeriod">
+              <option value="30days">30 ngày gần nhất</option>
+              <option value="month">Tháng này</option>
+              <option value="year">Năm này</option>
+            </select>
+          </div>
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </section>
+
+      <section id="orders" class="section">
+        <div class="bulk-paste-card">
+          <h3>📋 Dán dữ liệu hàng loạt từ Excel/Bảng (Khách hàng cũ)</h3>
+          <p
+            style="
+              margin-bottom: 10px;
+              color: var(--text-gray);
+              font-size: 0.9rem;
+            "
+          >
+            Dán các cột sau vào ô dưới (mỗi dòng là một khách hàng): **Tên,
+            Email, Số điện thoại, Số đơn hàng, Tổng chi tiêu, Ngày đăng ký**.
+            <span style="font-weight: 600; color: var(--danger-color)"
+              >Lưu ý: Bạn phải dán đúng thứ tự cột, cách nhau bằng dấu tab hoặc
+              dấu phẩy.</span
+            >
+          </p>
+          <div class="form-group">
+            <textarea
+              id="bulkDataInput"
+              placeholder="Dán dữ liệu vào đây (ví dụ: Tên\tEmail\t...\tNgày)"
+            ></textarea>
+          </div>
+          <button id="importBulkBtn" class="btn btn-primary">
+            ⬆️ Nhập dữ liệu hàng loạt
+          </button>
+        </div>
+
+        <div class="form-card">
+          <h3>➕ Thêm đơn hàng mới</h3>
+          <form id="orderForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="customerName">Tên khách hàng *</label>
+                <input type="text" id="customerName" required />
+              </div>
+              <div class="form-group">
+                <label for="customerEmail">Email khách hàng</label>
+                <input type="email" id="customerEmail" />
+              </div>
+              <div class="form-group">
+                <label for="productName">Sản phẩm *</label>
+                <input type="text" id="productName" required />
+              </div>
+              <div class="form-group">
+                <label for="quantity">Số lượng *</label>
+                <input type="number" id="quantity" min="1" required />
+              </div>
+              <div class="form-group">
+                <label for="price">Giá (đ) *</label>
+                <input type="number" id="price" min="0" required />
+              </div>
+              <div class="form-group">
+                <label>Tổng tiền</label>
+                <input
+                  type="text"
+                  id="totalPrice"
+                  readonly
+                  style="background: var(--border-color)"
+                />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              ➕ Thêm đơn hàng
+            </button>
+          </form>
+        </div>
+
+        <div class="search-container">
+          <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="🔍 Tìm kiếm theo tên khách, sản phẩm hoặc Mã ĐH..."
+          />
+          <button class="btn btn-success" id="exportBtn">📥 Export CSV</button>
+        </div>
+
+        <div class="table-container">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã ĐH</th>
+                  <th>Tên khách hàng</th>
+                  <th>Email</th>
+                  <th>Sản phẩm</th>
+                  <th>Số lượng</th>
+                  <th>Giá (đ)</th>
+                  <th>Tổng tiền</th>
+                  <th>Ngày</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </section>
+    </div>
+
+    <div id="notificationContainer"></div>
+
+    <div class="print-invoice-content" style="display: none"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      // ================= GLOBAL VARIABLES =================
+      const sections = document.querySelectorAll(".section");
+      const navBtns = document.querySelectorAll(".nav-btn");
+      const ordersTableBody = document.getElementById("ordersTableBody");
+      const orderForm = document.getElementById("orderForm");
+      const customerNameInput = document.getElementById("customerName");
+      const customerEmailInput = document.getElementById("customerEmail");
+      const productNameInput = document.getElementById("productName");
+      const quantityInput = document.getElementById("quantity");
+      const priceInput = document.getElementById("price");
+      const totalPriceInput = document.getElementById("totalPrice");
+      const searchInput = document.getElementById("searchInput");
+      const exportBtn = document.getElementById("exportBtn");
+      const themeToggle = document.getElementById("themeToggle");
+      const themeIcon = document.getElementById("themeIcon");
+
+      const totalRevenueEl = document.getElementById("totalRevenue");
+      const todayRevenueEl = document.getElementById("todayRevenue");
+      const totalOrdersEl = document.getElementById("totalOrders");
+      const todayOrdersEl = document.getElementById("todayOrders");
+      const printInvoiceContent = document.querySelector(
+        ".print-invoice-content"
+      );
+
+      // NEW: Bulk Paste Elements
+      const bulkDataInput = document.getElementById("bulkDataInput");
+      const importBulkBtn = document.getElementById("importBulkBtn");
+
+      let orders = [];
+      let currentPage = 1;
+      const rowsPerPage = 5;
+      let revenueChart; // Khai báo biến chart toàn cục
+
+      // ================= UTILITY FUNCTIONS =================
+
+      /**
+       * Định dạng số thành tiền tệ Việt Nam Đồng (VND)
+       * @param {number} num
+       * @returns {string} Chuỗi tiền tệ
+       */
+      function formatCurrency(num) {
+        if (typeof num !== "number" || isNaN(num)) return "0 đ";
+        // Sử dụng Intl.NumberFormat để đảm bảo định dạng chuẩn
+        return new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+          minimumFractionDigits: 0,
+        }).format(num);
+      }
+
+      /**
+       * Cố gắng parse chuỗi ngày tháng theo định dạng D/M/YYYY
+       * @param {string} dateStr
+       * @returns {Date} Đối tượng Date
+       */
+      function parseDate(dateStr) {
+        if (!dateStr) return new Date();
+
+        // Thay thế các dấu phân cách phổ biến (/, -, .) bằng / và cắt khoảng trắng
+        const cleanStr = dateStr.trim().replace(/[\-\.]/g, "/");
+        const parts = cleanStr.split("/");
+
+        if (parts.length === 3) {
+          let day = parseInt(parts[0].trim(), 10);
+          let month = parseInt(parts[1].trim(), 10);
+          let year = parseInt(parts[2].trim(), 10);
+
+          if (year < 100) {
+            year = 2000 + year;
+          }
+          // Lưu ý: Tháng trong Date constructor là 0-11
+          const parsedDate = new Date(year, month - 1, day);
+
+          // Kiểm tra tính hợp lệ nghiêm ngặt
+          if (
+            !isNaN(parsedDate.getTime()) &&
+            parsedDate.getFullYear() === year &&
+            parsedDate.getMonth() === month - 1 &&
+            parsedDate.getDate() === day
+          ) {
+            return parsedDate;
+          }
+        }
+        // Thử parse bằng new Date() cho các định dạng chuẩn khác
+        const fallbackDate = new Date(dateStr);
+        if (!isNaN(fallbackDate.getTime())) {
+          return fallbackDate;
+        }
+
+        return new Date(); // Mặc định là ngày hiện tại nếu parse thất bại
+      }
+
+      /**
+       * Tạo ID đơn hàng mới theo định dạng DHxxx
+       * @param {Array} ordersArray - Mảng đơn hàng hiện tại
+       * @returns {string} ID mới
+       */
+      function generateNewOrderId(ordersArray) {
+        const maxIdNum = ordersArray.reduce((max, o) => {
+          const match = o.id ? String(o.id).match(/DH(\d+)/) : null;
+          const num = match ? parseInt(match[1], 10) : 0;
+          return num > max ? num : max;
+        }, 0);
+        return "DH" + String(maxIdNum + 1).padStart(3, "0");
+      }
+
+      /**
+       * Cập nhật hiển thị Tổng tiền (Tự động)
+       */
+      function updateTotalPrice() {
+        const q = parseFloat(quantityInput.value) || 0;
+        const p = parseFloat(priceInput.value) || 0;
+        const total = q * p;
+        totalPriceInput.value = total > 0 ? formatCurrency(total) : "";
+      }
+      quantityInput.addEventListener("input", updateTotalPrice);
+      priceInput.addEventListener("input", updateTotalPrice);
+
+      /**
+       * Hiển thị thông báo Toast
+       * @param {string} message
+       * @param {string} type - success hoặc error
+       */
+      function showNotification(message, type = "success") {
+        const container = document.getElementById("notificationContainer");
+        const notif = document.createElement("div");
+        notif.className = `notification ${type}`;
+        notif.innerHTML = `${type === "success" ? "✅" : "❌"} ${message}`; // Thêm emoji
+        container.appendChild(notif);
+        setTimeout(() => {
+          notif.style.opacity = "0";
+          notif.style.transform = "translateX(400px)";
+          notif.addEventListener("transitionend", () => notif.remove());
+        }, 3000);
+      }
+
+      // ================= DATA PERSISTENCE =================
+
+      /**
+       * Tải đơn hàng từ Local Storage
+       */
+      function loadOrders() {
+        const storedOrders = localStorage.getItem("orders");
+        if (storedOrders) {
+          // Chuyển đổi date string thành Date objects
+          orders = JSON.parse(storedOrders).map((o) => ({
+            ...o,
+            date: new Date(o.date),
+          }));
+        } else {
+          // Khởi tạo dữ liệu mẫu nếu chưa có
+          orders = initialOrders.map((o) => ({ ...o, date: new Date(o.date) }));
+        }
+        // Sắp xếp đơn hàng theo ngày giảm dần
+        orders.sort((a, b) => b.date.getTime() - a.date.getTime());
+      }
+
+      /**
+       * Lưu đơn hàng vào Local Storage
+       */
+      function saveOrders() {
+        localStorage.setItem("orders", JSON.stringify(orders));
+      }
+
+      // ================= HANDLERS =================
+
+      // Thêm đơn hàng thủ công
+      orderForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const newId = generateNewOrderId(orders);
+        const order = {
+          id: newId,
+          customer: customerNameInput.value.trim(),
+          email: customerEmailInput.value.trim() || "N/A",
+          product: productNameInput.value.trim(),
+          quantity: parseInt(quantityInput.value),
+          price: parseFloat(priceInput.value),
+          date: new Date(),
+        };
+
+        orders.unshift(order); // Thêm vào đầu để hiển thị mới nhất
+        saveOrders();
+        showNotification("Thêm đơn hàng thành công!", "success");
+        orderForm.reset();
+        totalPriceInput.value = "";
+        renderTable();
+        updateDashboard();
+        updateChart();
+      });
+
+      // Xử lý Import hàng loạt
+      importBulkBtn.addEventListener("click", handleBulkImport);
+
+      function handleBulkImport() {
+        const rawData = bulkDataInput.value.trim();
+        if (!rawData) {
+          showNotification("Vui lòng dán dữ liệu vào ô nhập liệu.", "error");
+          return;
+        }
+
+        const lines = rawData.split("\n").filter((line) => line.trim() !== "");
+        const newOrders = [];
+        let successCount = 0;
+        let failCount = 0;
+
+        // Sử dụng biểu thức chính quy để tách bằng tab hoặc dấu phẩy
+        const delimiterRegex = /[\t,]/;
+        let currentMaxId = orders.reduce((max, o) => {
+          const match = o.id ? String(o.id).match(/DH(\d+)/) : null;
+          const num = match ? parseInt(match[1], 10) : 0;
+          return num > max ? num : max;
+        }, 0);
+
+        for (const line of lines) {
+          let values = line
+            .split(delimiterRegex)
+            .map((v) => v.trim().replace(/"/g, ""));
+
+          // Dữ liệu mong đợi: Tên, Email, Sđt, Số đơn hàng, Tổng chi tiêu, Ngày đăng ký
+          // Chúng ta cần: Tên (0), Email (1), Số đơn hàng (3), Tổng chi tiêu (4), Ngày đăng ký (5)
+          if (values.length < 6) {
+            failCount++;
+            continue;
+          }
+
+          const customerName = values[0];
+          const email = values[1];
+          const quantityStr = values[3];
+          const totalStr = values[4];
+          const dateStr = values[5];
+
+          const quantity = parseInt(quantityStr) || 1;
+
+          // Làm sạch chuỗi tiền tệ (chỉ giữ lại số)
+          const rawTotal = totalStr.replace(/[^0-9]/g, "");
+          const totalAmount = parseFloat(rawTotal) || 0;
+
+          const price = quantity > 0 ? totalAmount / quantity : totalAmount;
+          const orderDate = parseDate(dateStr);
+
+          if (
+            customerName &&
+            quantity >= 1 &&
+            totalAmount >= 0 &&
+            !isNaN(orderDate.getTime())
+          ) {
+            currentMaxId++;
+            const newId = "DH" + String(currentMaxId).padStart(3, "0");
+
+            const newOrder = {
+              id: newId,
+              customer: customerName,
+              email: email || "N/A",
+              product: "Đơn hàng cũ/Bulk", // Đặt tên chung cho đơn hàng nhập loạt
+              quantity: quantity,
+              price: price,
+              date: orderDate,
+            };
+
+            newOrders.push(newOrder);
+            successCount++;
+          } else {
+            failCount++;
+          }
+        }
+
+        if (newOrders.length > 0) {
+          orders.push(...newOrders);
+          orders.sort((a, b) => b.date.getTime() - a.date.getTime());
+          saveOrders();
+
+          showNotification(
+            `Nhập liệu thành công! Thêm ${newOrders.length} đơn hàng mới. (${failCount} lỗi)`,
+            "success"
+          );
+          bulkDataInput.value = "";
+        } else if (failCount > 0) {
+          showNotification(
+            `Không có đơn hàng nào được thêm. Vui lòng kiểm tra định dạng dữ liệu (Tổng cộng ${failCount} lỗi).`,
+            "error"
+          );
+        } else {
+          showNotification(
+            "Không tìm thấy dữ liệu hợp lệ nào để nhập.",
+            "error"
+          );
+        }
+
+        renderTable();
+        updateDashboard();
+        updateChart();
+      }
+
+      // ================= TABLE RENDER & PAGINATION =================
+
+      function renderTable() {
+        const search = searchInput.value.toLowerCase();
+        let filteredOrders = orders.filter(
+          (o) =>
+            o.customer.toLowerCase().includes(search) ||
+            o.product.toLowerCase().includes(search) ||
+            o.email.toLowerCase().includes(search) ||
+            o.id.toLowerCase().includes(search)
+        );
+
+        // Đảm bảo không chia cho 0
+        const totalPages = Math.ceil(filteredOrders.length / rowsPerPage) || 1;
+
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageOrders = filteredOrders.slice(start, end);
+
+        ordersTableBody.innerHTML = "";
+        if (pageOrders.length === 0) {
+          ordersTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-gray); padding: 20px;">Không tìm thấy đơn hàng nào.</td></tr>`;
+        }
+
+        pageOrders.forEach((order) => {
+          const total = order.quantity * order.price;
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+			<td>${order.id}</td>
+			<td>${order.customer}</td>
+			<td>${order.email || "N/A"}</td> <td>${order.product}</td>
+			<td>${order.quantity}</td>
+			<td>${formatCurrency(order.price)}</td>
+			<td>${formatCurrency(total)}</td>
+			<td>${order.date.toLocaleDateString()}</td>
+			<td class="actions">
+				<button class="btn btn-sm btn-warning btn-xs" onclick="editOrder('${
+          order.id
+        }')">✏️ Sửa</button>
+				<button class="btn btn-sm btn-danger btn-xs" onclick="deleteOrder('${
+          order.id
+        }')">🗑️ Xóa</button>
+				<button class="btn btn-sm btn-primary btn-xs" onclick="printInvoice('${
+          order.id
+        }')">🖨️ In HĐ</button> </td>
+		`;
+          ordersTableBody.appendChild(tr);
+        });
+
+        renderPagination(totalPages);
+      }
+
+      searchInput.addEventListener("input", () => {
+        currentPage = 1; // Reset về trang 1 khi tìm kiếm
+        renderTable();
+      });
+
+      // Pagination Render
+      const paginationEl = document.getElementById("pagination");
+      function renderPagination(totalPages) {
+        paginationEl.innerHTML = "";
+        if (totalPages <= 1) return;
+
+        // Nút Previous
+        const prevBtn = document.createElement("button");
+        prevBtn.textContent = "«";
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+          }
+        });
+        paginationEl.appendChild(prevBtn);
+
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.classList.toggle("active", i === currentPage);
+          btn.addEventListener("click", () => {
+            currentPage = i;
+            renderTable();
+          });
+          paginationEl.appendChild(btn);
+        }
+
+        // Nút Next
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "»";
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener("click", () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderTable();
+          }
+        });
+        paginationEl.appendChild(nextBtn);
+      }
+
+      // ================= ACTION FUNCTIONS (GLOBAL) =================
+
+      // Xóa đơn hàng
+      window.deleteOrder = function (id) {
+        orders = orders.filter((o) => o.id !== id);
+        saveOrders();
+        showNotification("Xóa đơn hàng thành công!", "success");
+        renderTable();
+        updateDashboard();
+        updateChart();
+      };
+
+      // Chuyển sang chế độ Sửa
+      window.editOrder = function (id) {
+        const order = orders.find((o) => o.id === id);
+        if (!order) return;
+        const tr = [...ordersTableBody.children].find(
+          (r) => r.children[0].textContent === id
+        );
+        if (!tr) return;
+        tr.innerHTML = `
+			<td>${order.id}</td>
+			<td><input class="edit-input" type="text" value="${order.customer}"></td>
+			<td><input class="edit-input" type="email" value="${order.email || ""}"></td> 
+			<td><input class="edit-input" type="text" value="${order.product}"></td>
+			<td><input class="edit-input" type="number" min="1" value="${
+        order.quantity
+      }"></td>
+			<td><input class="edit-input" type="number" min="0" value="${order.price}"></td>
+			<td>${formatCurrency(order.quantity * order.price)}</td>
+			<td>${order.date.toLocaleDateString()}</td>
+			<td class="actions">
+				<button class="btn btn-sm btn-success btn-xs" onclick="saveEdit('${id}', this)">💾 Lưu</button>
+				<button class="btn btn-sm btn-danger btn-xs" onclick="renderTable()">❌ Hủy</button>
+			</td>
+		`;
+
+        // Cập nhật lại tổng tiền khi thay đổi quantity hoặc price trong chế độ edit
+        const quantityInputEdit = tr.querySelector(
+          'input[type="number"][min="1"]'
+        );
+        const priceInputEdit = tr.querySelector(
+          'input[type="number"][min="0"]'
+        );
+        const totalCell = tr.children[6];
+
+        function updateEditTotal() {
+          const q = parseInt(quantityInputEdit.value) || 0;
+          const p = parseFloat(priceInputEdit.value) || 0;
+          totalCell.textContent = formatCurrency(q * p);
+        }
+
+        quantityInputEdit.addEventListener("input", updateEditTotal);
+        priceInputEdit.addEventListener("input", updateEditTotal);
+      };
+
+      // Lưu chỉnh sửa
+      window.saveEdit = function (id, btn) {
+        const tr = btn.closest("tr");
+        const inputs = tr.querySelectorAll("input");
+        const order = orders.find((o) => o.id === id);
+
+        // Xử lý giá trị nhập liệu
+        // Inputs index: 0: customer, 1: email, 2: product, 3: quantity, 4: price
+        const newQuantity = parseInt(inputs[3].value);
+        const newPrice = parseFloat(inputs[4].value);
+
+        // Kiểm tra tính hợp lệ
+        if (
+          isNaN(newQuantity) ||
+          newQuantity < 1 ||
+          isNaN(newPrice) ||
+          newPrice < 0
+        ) {
+          showNotification("Lỗi: Số lượng và Giá phải là số hợp lệ.", "error");
+          return;
+        }
+
+        // Cập nhật
+        order.customer = inputs[0].value.trim();
+        order.email = inputs[1].value.trim();
+        order.product = inputs[2].value.trim();
+        order.quantity = newQuantity;
+        order.price = newPrice;
+
+        saveOrders();
+        showNotification("Cập nhật đơn hàng thành công!", "success");
+        renderTable();
+        updateDashboard();
+        updateChart();
+      };
+
+      // Xuất CSV
+      exportBtn.addEventListener("click", () => {
+        if (orders.length === 0) {
+          showNotification("Không có dữ liệu để xuất!", "error");
+          return;
+        }
+        let csv =
+          "Mã ĐH,Tên khách hàng,Email,Sản phẩm,Số lượng,Giá,Tổng tiền,Ngày\n";
+        orders.forEach((o) => {
+          const total = o.quantity * o.price;
+          // Sử dụng regex để bọc giá trị có dấu phẩy bằng dấu ngoặc kép (CSV standard)
+          csv += `${o.id},"${o.customer}","${o.email || ""}","${o.product}",${
+            o.quantity
+          },${o.price},${total},${o.date.toLocaleDateString("vi-VN")}\n`;
+        });
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "orders_revenue_data.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+        showNotification("Xuất CSV thành công!", "success");
+      });
+
+      // In Hóa đơn
+      window.printInvoice = function (id) {
+        const order = orders.find((o) => o.id === id);
+        if (!order) {
+          showNotification("Không tìm thấy đơn hàng!", "error");
+          return;
+        }
+
+        const total = order.quantity * order.price;
+
+        const invoiceHTML = `
+      <div style="max-width: 800px; margin: 0 auto; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff;">
+          
+          <div style="text-align: center; border-bottom: 3px solid #2c3e50; padding-bottom: 20px; margin-bottom: 30px;">
+              <h1 style="margin: 0; color: #2c3e50; font-size: 32px; font-weight: 700; letter-spacing: 1px;">HÓA ĐƠN BÁN HÀNG</h1>
+              <p style="margin: 8px 0 0 0; color: #7f8c8d; font-size: 14px;">SALES INVOICE</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 35px;">
+              
+              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 10px; color: white;">
+                  <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; border-bottom: 2px solid rgba(255,255,255,0.3); padding-bottom: 10px;">TUẤN VÀ QUÂN FPT</h3>
+                  <p style="margin: 8px 0; font-size: 14px; line-height: 1.6;">
+                      <strong>📍 Địa chỉ:</strong><br>
+                      FPT UNIVERSITY
+                  </p>
+                  <p style="margin: 8px 0; font-size: 14px;">
+                      <strong>✉️ Email:</strong> lequan12305@gmail.com
+                  </p>
+              </div>
+
+              <div style="background: #f8f9fa; padding: 25px; border-radius: 10px; border-left: 4px solid #3498db;">
+                  <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600; color: #2c3e50;">THÔNG TIN KHÁCH HÀNG</h3>
+                  <p style="margin: 8px 0; font-size: 14px; color: #34495e; line-height: 1.6;">
+                      <strong>👤 Khách hàng:</strong> ${order.customer}
+                  </p>
+                  <p style="margin: 8px 0; font-size: 14px; color: #34495e;">
+                      <strong>✉️ Email:</strong> ${order.email || "Không có"}
+                  </p>
+              </div>
+          </div>
+
+          <div style="background: linear-gradient(to right, #f093fb 0%, #f5576c 100%); padding: 20px 25px; border-radius: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+              <div style="color: white;">
+                  <strong style="font-size: 14px;">🔖 Mã đơn hàng:</strong>
+                  <span style="font-size: 18px; font-weight: 600; margin-left: 8px;">#${
+                    order.id
+                  }</span>
+              </div>
+              <div style="color: white;">
+                  <strong style="font-size: 14px;">📅 Ngày:</strong>
+                  <span style="font-size: 16px; margin-left: 8px;">${order.date.toLocaleDateString(
+                    "vi-VN"
+                  )}</span>
+              </div>
+              <div style="color: white;">
+                  <strong style="font-size: 14px;">👨‍💼 Người bán:</strong>
+                  <span style="font-size: 16px; margin-left: 8px;">Tuấn và Quân FPT</span>
+              </div>
+          </div>
+
+          <div style="margin-bottom: 30px;">
+              <h3 style="color: #2c3e50; font-size: 20px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #ecf0f1;">📦 CHI TIẾT ĐƠN HÀNG</h3>
+              
+              <table style="width: 100%; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                  <thead>
+                      <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                          <th style="padding: 15px; text-align: center; font-weight: 600; border: none;">STT</th>
+                          <th style="padding: 15px; text-align: left; font-weight: 600; border: none;">Sản phẩm</th>
+                          <th style="padding: 15px; text-align: center; font-weight: 600; border: none;">Số lượng</th>
+                          <th style="padding: 15px; text-align: right; font-weight: 600; border: none;">Đơn giá</th>
+                          <th style="padding: 15px; text-align: right; font-weight: 600; border: none;">Thành tiền</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr style="background: #fff; border-bottom: 1px solid #ecf0f1;">
+                          <td style="padding: 15px; text-align: center; color: #34495e;">1</td>
+                          <td style="padding: 15px; text-align: left; color: #2c3e50; font-weight: 500;">${
+                            order.product
+                          }</td>
+                          <td style="padding: 15px; text-align: center; color: #34495e;">${
+                            order.quantity
+                          }</td>
+                          <td style="padding: 15px; text-align: right; color: #34495e;">${formatCurrency(
+                            order.price
+                          )}</td>
+                          <td style="padding: 15px; text-align: right; color: #2c3e50; font-weight: 600;">${formatCurrency(
+                            total
+                          )}</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+
+          <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 10px; text-align: right; margin-bottom: 30px;">
+              <div style="color: white; font-size: 16px; margin-bottom: 5px;">TỔNG CỘNG</div>
+              <div style="color: white; font-size: 32px; font-weight: 700; letter-spacing: 1px;">${formatCurrency(
+                total
+              )}</div>
+          </div>
+
+          <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 10px; border-top: 3px solid #3498db;">
+              <p style="margin: 0; color: #2c3e50; font-size: 16px; font-weight: 500;">
+                  🙏 Xin chân thành cảm ơn quý khách!
+              </p>
+              <p style="margin: 10px 0 0 0; color: #7f8c8d; font-size: 14px;">
+                  Vui lòng kiểm tra kỹ thông tin trước khi rời đi.
+              </p>
+          </div>
+
+      </div>
+`;
+
+        printInvoiceContent.innerHTML = invoiceHTML;
+        window.print();
+        printInvoiceContent.innerHTML = ""; // Xóa nội dung sau khi in
+      };
+
+      // ================= DASHBOARD STATS =================
+
+      function updateDashboard() {
+        // 1. Tổng doanh thu (Tất cả thời gian)
+        const totalRevenue = orders.reduce(
+          (a, o) => a + o.quantity * o.price,
+          0
+        );
+        // Sử dụng hiệu ứng đếm số (Pulse) khi giá trị thay đổi lớn
+        if (totalRevenueEl.textContent !== formatCurrency(totalRevenue)) {
+          totalRevenueEl.classList.add("pulse");
+          setTimeout(() => totalRevenueEl.classList.remove("pulse"), 2000);
+        }
+        totalRevenueEl.textContent = formatCurrency(totalRevenue);
+
+        // 2. Doanh thu và Đơn hàng hôm nay
+        const today = new Date().toLocaleDateString();
+        const todayOrdersData = orders.filter(
+          (o) => o.date.toLocaleDateString() === today
+        );
+        const todayRevenue = todayOrdersData.reduce(
+          (a, o) => a + o.quantity * o.price,
+          0
+        );
+        todayRevenueEl.textContent = formatCurrency(todayRevenue);
+
+        // 3. Tổng đơn hàng
+        totalOrdersEl.textContent = orders.length;
+
+        // 4. Đơn hàng hôm nay
+        todayOrdersEl.textContent = todayOrdersData.length;
+      }
+
+      // ================= CHART.JS CONFIG =================
+
+      const ctx = document.getElementById("revenueChart").getContext("2d");
+
+      // Hàm tạo Gradient cho Fill Area
+      function getGradient(chart) {
+        const { ctx, chartArea } = chart;
+        if (!chartArea) {
+          return null;
+        }
+        const gradient = ctx.createLinearGradient(
+          0,
+          chartArea.bottom,
+          0,
+          chartArea.top
+        );
+        gradient.addColorStop(0, "rgba(99, 102, 241, 0.1)");
+        gradient.addColorStop(0.5, "rgba(99, 102, 241, 0.5)");
+        gradient.addColorStop(1, "rgba(139, 92, 246, 0.8)");
+        return gradient;
+      }
+
+      // Khởi tạo Chart
+      function initializeChart() {
+        // Lấy màu sắc mặc định dựa trên theme hiện tại
+        const isDarkMode =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        const textColor = isDarkMode ? "#f1f5f9" : "#0f172a";
+        const gridColor = isDarkMode
+          ? "rgba(255, 255, 255, 0.1)"
+          : "rgba(0, 0, 0, 0.1)";
+        const tickColor = isDarkMode ? "#cbd5e1" : "#64748b";
+
+        const { labels, data } = getRevenueData("30days");
+
+        revenueChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Doanh thu",
+                data: data,
+                borderColor: "rgba(139, 92, 246, 1)",
+                backgroundColor: (context) => getGradient(context.chart),
+                tension: 0.4,
+                pointRadius: 5,
+                pointHoverRadius: 8,
+                fill: true,
+                borderWidth: 3,
+                pointBackgroundColor: "#fff",
+                pointBorderColor: "rgba(139, 92, 246, 1)",
+                pointBorderWidth: 2,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false, // Giữ nguyên, đã fix lỗi bằng CSS height
+            plugins: {
+              legend: {
+                display: true,
+                labels: {
+                  color: textColor,
+                },
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    if (context.parsed.y !== null) {
+                      label += formatCurrency(context.parsed.y); // Sử dụng hàm định dạng toàn cục
+                    }
+                    return label;
+                  },
+                },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: gridColor,
+                  borderColor: "transparent",
+                },
+                ticks: {
+                  color: tickColor,
+                  // Định dạng y-axis ticks thành tiền tệ
+                  callback: function (value, index, values) {
+                    if (value >= 1000000000) {
+                      return (value / 1000000000).toFixed(1) + " Tỷ đ";
+                    }
+                    if (value >= 1000000) {
+                      return (value / 1000000).toFixed(1) + " Tr đ";
+                    }
+                    return formatCurrency(value);
+                  },
+                },
+              },
+              x: {
+                grid: {
+                  color: gridColor,
+                  borderColor: "transparent",
+                },
+                ticks: {
+                  color: tickColor,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      function getRevenueData(period = "30days") {
+        let labels = [];
+        let data = [];
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+
+        // Hàm lấy ngày chuẩn, không bị lệch múi giờ
+        const getLocalizedDate = (date) => {
+          return new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+          ).toLocaleDateString();
+        };
+
+        // Nhóm đơn hàng theo ngày để tính tổng nhanh hơn
+        const revenueByDay = orders.reduce((acc, o) => {
+          const dateKey = getLocalizedDate(o.date);
+          acc[dateKey] = (acc[dateKey] || 0) + o.quantity * o.price;
+          return acc;
+        }, {});
+
+        // Nhóm đơn hàng theo tháng
+        const revenueByMonth = orders.reduce((acc, o) => {
+          const monthKey = `${o.date.getMonth() + 1}/${o.date.getFullYear()}`;
+          acc[monthKey] = (acc[monthKey] || 0) + o.quantity * o.price;
+          return acc;
+        }, {});
+
+        if (period === "30days") {
+          for (let i = 29; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(now.getDate() - i);
+            const dayKey = getLocalizedDate(d);
+            labels.push(dayKey);
+            data.push(revenueByDay[dayKey] || 0);
+          }
+        } else if (period === "month") {
+          const daysInMonth = new Date(
+            currentYear,
+            currentMonth + 1,
+            0
+          ).getDate();
+          for (let i = 1; i <= daysInMonth; i++) {
+            labels.push(i + "/" + (currentMonth + 1));
+
+            const dayToSearch = getLocalizedDate(
+              new Date(currentYear, currentMonth, i)
+            );
+
+            data.push(revenueByDay[dayToSearch] || 0);
+          }
+        } else if (period === "year") {
+          for (let i = 0; i < 12; i++) {
+            labels.push(`Tháng ${i + 1}`);
+            const monthKey = `${i + 1}/${currentYear}`;
+            data.push(revenueByMonth[monthKey] || 0);
+          }
+        }
+        return { labels, data };
+      }
+
+      function updateChart() {
+        if (!revenueChart) return;
+
+        const period = document.getElementById("chartPeriod").value;
+        const { labels, data } = getRevenueData(period);
+        revenueChart.data.labels = labels;
+        revenueChart.data.datasets[0].data = data;
+
+        // Cập nhật lại màu sắc và gradient khi dữ liệu thay đổi (và theme)
+        revenueChart.data.datasets[0].backgroundColor = (context) =>
+          getGradient(context.chart);
+
+        // Cập nhật lại màu sắc cho Chart khi đổi theme
+        const newIsDarkMode =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        const newTextColor = newIsDarkMode ? "#f1f5f9" : "#0f172a";
+        const newGridColor = newIsDarkMode
+          ? "rgba(255, 255, 255, 0.1)"
+          : "rgba(0, 0, 0, 0.1)";
+        const newTickColor = newIsDarkMode ? "#cbd5e1" : "#64748b";
+
+        revenueChart.options.plugins.legend.labels.color = newTextColor;
+        revenueChart.options.scales.y.grid.color = newGridColor;
+        revenueChart.options.scales.y.ticks.color = newTickColor;
+        revenueChart.options.scales.x.grid.color = newGridColor;
+        revenueChart.options.scales.x.ticks.color = newTickColor;
+
+        revenueChart.update();
+      }
+
+      document
+        .getElementById("chartPeriod")
+        .addEventListener("change", updateChart);
+
+      // ================= NAVIGATION & THEME =================
+
+      // Navigation
+      navBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          navBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          const section = btn.dataset.section;
+          sections.forEach((s) => s.classList.remove("active"));
+          document.getElementById(section).classList.add("active");
+
+          // Nếu chuyển sang Dashboard, cập nhật lại Chart
+          if (section === "dashboard") {
+            updateChart();
+          }
+        });
+      });
+
+      // Theme Toggle
+      themeToggle.addEventListener("click", () => {
+        const isDarkMode =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        if (isDarkMode) {
+          document.documentElement.setAttribute("data-theme", "light");
+          themeIcon.textContent = "🌙";
+        } else {
+          document.documentElement.setAttribute("data-theme", "dark");
+          themeIcon.textContent = "☀️";
+        }
+
+        // Cập nhật lại màu sắc cho Chart khi đổi theme
+        if (revenueChart) {
+          updateChart(); // Gọi updateChart để cập nhật màu sắc và theme
+        }
+      });
+
+      // ================= INITIALIZATION =================
+
+      // Dữ liệu mẫu (Giữ lại để khởi tạo nếu không có Local Storage)
+      const initialOrders = [
+        {
+          id: "DH001",
+          customer: "Nguyễn Văn A",
+          email: "a@mail.com",
+          product: "Dịch vụ web",
+          quantity: 1,
+          price: 5000000,
+          date: new Date(2025, 9, 25), // Tháng 10
+        },
+        {
+          id: "DH002",
+          customer: "Trần Thị B",
+          email: "b@mail.com",
+          product: "Khóa học",
+          quantity: 2,
+          price: 1500000,
+          date: new Date(2025, 10, 10), // Tháng 11
+        },
+        {
+          id: "DH003",
+          customer: "Lê Văn C",
+          email: "c@mail.com",
+          product: "Phần mềm",
+          quantity: 1,
+          price: 8000000,
+          date: new Date(), // Hôm nay
+        },
+      ];
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadOrders(); // Tải dữ liệu từ Local Storage hoặc tạo mẫu
+        initializeChart(); // Khởi tạo biểu đồ
+        updateDashboard(); // Cập nhật Dashboard
+        updateChart(); // Cập nhật dữ liệu lần đầu cho Chart
+        renderTable(); // Hiển thị bảng lần đầu
+      });
+    </script>
+  </body>
+</html>
