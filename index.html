@@ -1905,6 +1905,7 @@
           return num > max ? num : max;
         }, 0);
 
+        const REQUIRED_INDEXES = [0, 1, 3, 4, 5];
         for (const line of lines) {
           let values = line
             .split(delimiterRegex)
@@ -1919,9 +1920,9 @@
 
           const customerName = values[0];
           const email = values[1];
-          const quantityStr = values[3];
-          const totalStr = values[4];
-          const dateStr = values[5];
+          const quantityStr = values[3]; // Số lượng
+          const totalStr = values[4]; // Tổng chi tiêu
+          const dateStr = values[5]; // Ngày đăng ký
 
           const quantity = parseInt(quantityStr) || 1;
 
@@ -2019,7 +2020,7 @@
     <td>${order.id}</td>
     <td>${order.customer}</td>
     <td>${order.email || "N/A"}</td> 
-    <td>${order.product}</td>  <-- **SẢN PHẨM Ở ĐÂY**
+    <td>${order.product}</td>  
     <td>${order.quantity}</td>
     <td>${formatCurrency(order.price)}</td>
     <td>${formatCurrency(total)}</td>
@@ -2110,21 +2111,25 @@
         );
         if (!tr) return;
         tr.innerHTML = `
-			<td>${order.id}</td>
-			<td><input class="edit-input" type="text" value="${order.customer}"></td>
-			<td><input class="edit-input" type="email" value="${order.email || ""}"></td> 
-			<td><input class="edit-input" type="text" value="${order.product}"></td>
-			<td><input class="edit-input" type="number" min="1" value="${
-        order.quantity
-      }"></td>
-			<td><input class="edit-input" type="number" min="0" value="${order.price}"></td>
-			<td>${formatCurrency(order.quantity * order.price)}</td>
-			<td>${order.date.toLocaleDateString()}</td>
-			<td class="actions">
-				<button class="btn btn-sm btn-success btn-xs" onclick="saveEdit('${id}', this)">💾 Lưu</button>
-				<button class="btn btn-sm btn-danger btn-xs" onclick="renderTable()">❌ Hủy</button>
-			</td>
-		`;
+    <td>${order.id}</td>
+    <td><input class="edit-input" type="text" value="${order.customer}"></td>
+    <td><input class="edit-input" type="email" value="${
+      order.email || ""
+    }"></td> 
+    <td><input class="edit-input" type="text" value="${order.product}"></td> 
+    <td><input class="edit-input" type="number" min="1" value="${
+      order.quantity
+    }"></td>
+    <td><input class="edit-input" type="number" min="0" value="${
+      order.price
+    }"></td>
+    <td>${formatCurrency(order.quantity * order.price)}</td>
+    <td>${order.date.toLocaleDateString()}</td>
+    <td class="actions">
+        <button class="btn btn-sm btn-success btn-xs" onclick="saveEdit('${id}', this)">💾 Lưu</button>
+        <button class="btn btn-sm btn-danger btn-xs" onclick="renderTable()">❌ Hủy</button>
+    </td>
+`;
 
         // Cập nhật lại tổng tiền khi thay đổi quantity hoặc price trong chế độ edit
         const quantityInputEdit = tr.querySelector(
