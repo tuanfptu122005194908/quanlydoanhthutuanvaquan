@@ -2016,24 +2016,26 @@
           const total = order.quantity * order.price;
           const tr = document.createElement("tr");
           tr.innerHTML = `
-			<td>${order.id}</td>
-			<td>${order.customer}</td>
-			<td>${order.email || "N/A"}</td> <td>${order.product}</td>
-			<td>${order.quantity}</td>
-			<td>${formatCurrency(order.price)}</td>
-			<td>${formatCurrency(total)}</td>
-			<td>${order.date.toLocaleDateString()}</td>
-			<td class="actions">
-				<button class="btn btn-sm btn-warning btn-xs" onclick="editOrder('${
+    <td>${order.id}</td>
+    <td>${order.customer}</td>
+    <td>${order.email || "N/A"}</td> 
+    <td>${order.product}</td>  <-- **SẢN PHẨM Ở ĐÂY**
+    <td>${order.quantity}</td>
+    <td>${formatCurrency(order.price)}</td>
+    <td>${formatCurrency(total)}</td>
+    <td>${order.date.toLocaleDateString()}</td>
+    <td class="actions">
+        <button class="btn btn-sm btn-warning btn-xs" onclick="editOrder('${
           order.id
         }')">✏️ Sửa</button>
-				<button class="btn btn-sm btn-danger btn-xs" onclick="deleteOrder('${
+        <button class="btn btn-sm btn-danger btn-xs" onclick="deleteOrder('${
           order.id
         }')">🗑️ Xóa</button>
-				<button class="btn btn-sm btn-primary btn-xs" onclick="printInvoice('${
+        <button class="btn btn-sm btn-primary btn-xs" onclick="printInvoice('${
           order.id
-        }')">🖨️ In HĐ</button> </td>
-		`;
+        }')">🖨️ In HĐ</button>
+    </td>
+`;
           ordersTableBody.appendChild(tr);
         });
 
